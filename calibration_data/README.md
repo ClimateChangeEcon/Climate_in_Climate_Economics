@@ -6,7 +6,7 @@ The folder contains data and codes used for the calibration of the CE in the CDI
 - ['EmiAndConcData'](EmiAndConcData) contains emission data for the different RCPs, as input for the CE.
 - ['DataFromCMIP'](DataFromCMIP) contains CMIP5 benchmark data for the different RCPs and the 1pctCO2.
 
-Please see the Readem in the respective folders for details.
+Please see the Readme in the respective folders for details.
 
     
 ## Pre-requisites to run the python code
