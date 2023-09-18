@@ -14,17 +14,16 @@ def equations(state, policy_state):
     # Parameters
     # ----------------------------------------------------------------------- #
     Tstep = Parameters.Tstep
-    Version = Parameters.Version
     # Economic and climate parameters
     delta, alpha, psi = Parameters.delta, Parameters.alpha, Parameters.psi
-    phi12 = Definitions.phi12(state, policy_state)
-    phi23 = Definitions.phi23(state, policy_state)
-    phi21 = Definitions.phi21(state, policy_state)
-    phi32 = Definitions.phi32(state, policy_state)
-    varphi21 = Definitions.varphi21(state, policy_state)
-    varphi4 = Definitions.varphi4(state, policy_state)
-    xi2 = Definitions.xi2(state, policy_state)
-    varphi1 = Definitions.varphi1(state, policy_state)
+    b12 = Definitions.b12(state, policy_state)
+    b23 = Definitions.b23(state, policy_state)
+    b21 = Definitions.b21(state, policy_state)
+    b32 = Definitions.b32(state, policy_state)
+    c1c3 = Definitions.c1c3(state, policy_state)
+    c4 = Definitions.c4(state, policy_state)
+    c1f = Definitions.c1f(state, policy_state)
+    c1 = Definitions.c1(state, policy_state)
     f2xco2, MATbase = Parameters.f2xco2, Parameters.MATbase
     theta2 = Parameters.theta2
 
@@ -46,7 +45,6 @@ def equations(state, policy_state):
     kx = State.kx(state)
     MATx, MUOx, MLOx = State.MATx(state), State.MUOx(state), State.MLOx(state)
     TATx, TOCx = State.TATx(state), State.TOCx(state)
-    zetax, chix = State.zetax(state), State.chix(state)
 
     # States in period t+1
     MATplus = Definitions.MATplus(state, policy_state)
@@ -77,80 +75,46 @@ def equations(state, policy_state):
     # ----------------------------------------------------------------------- #
     loss_dict = {}
 
-    if (Version == 'cjl') or (Version == '2007'):
-        # ----------------------------------------------------------------------- #
-        # FOC wrt. kplus for cjl and dice2007
-        # ----------------------------------------------------------------------- #
-        loss_dict['foc_kplus'] = tf.math.exp(gr_tfp + gr_lab) * lambd_haty \
-            - beta_hat * E_t(
-                lambda s, ps:
-                PolicyState.lambd_haty(ps) * (
-                    Tstep * Definitions.Omega(s, ps)
-                    * State.zetax(s) * alpha * kplusy**(alpha - 1)
-                    + (1 - delta)**Tstep)
-                + (-PolicyState.nuAT_haty(ps))
-                * Tstep*Definitions.sigma(s, ps) * Definitions.tfp(s, ps)
-                * Definitions.lab(s, ps)
-                * State.zetax(s) * alpha * kplusy**(alpha - 1)
-            )
-        # ----------------------------------------------------------------------- #
-        # FOC wrt. lambd_haty (budget constraint) for cjl and dice2007
-        # ----------------------------------------------------------------------- #
-        budget = Tstep* Omega * zetax * kx**alpha - Tstep * con \
-            + (1 - delta)**Tstep * kx - tf.math.exp(gr_tfp + gr_lab) * kplusy
-        loss_dict['foc_lambd'] = budget
-
-        # ----------------------------------------------------------------------- #
-        # FOC wrt. TATplus for cjl and dice2007
-        # ----------------------------------------------------------------------- #
-        loss_dict['foc_TATplus'] = etaAT_haty - beta_hat * E_t(
+    # ----------------------------------------------------------------------- #
+    # FOC wrt. kplus for dice 2016
+    # ----------------------------------------------------------------------- #
+    loss_dict['foc_kplus'] = tf.math.exp(gr_tfp + gr_lab) * lambd_haty \
+        - beta_hat * E_t(
             lambda s, ps:
-            PolicyState.lambd_haty(ps)
-            * (Tstep  * Definitions.Omega_prime(s, ps)) * State.zetax(s)
-            * kplusy**alpha + PolicyState.etaAT_haty(ps) * (1 - varphi21 - xi2)
-            + PolicyState.etaOC_haty(ps) * varphi4
-            )
-    else:
-        # ----------------------------------------------------------------------- #
-        # FOC wrt. kplus for dice 2016
-        # ----------------------------------------------------------------------- #
-        loss_dict['foc_kplus'] = tf.math.exp(gr_tfp + gr_lab) * lambd_haty \
-            - beta_hat * E_t(
-                lambda s, ps:
-                PolicyState.lambd_haty(ps) * (
-                    Tstep*(1 -  Definitions.Omega(s, ps))
-                    * State.zetax(s) * alpha * kplusy**(alpha - 1)
-                    + (1 - delta)**Tstep)
-                + (-PolicyState.nuAT_haty(ps)) 
-                * Tstep*Definitions.sigma(s, ps) * Definitions.tfp(s, ps)
-                * Definitions.lab(s, ps)
-                * State.zetax(s) * alpha * kplusy**(alpha - 1)
-            )
-        # ----------------------------------------------------------------------- #
-        # FOC wrt. lambd_haty (budget constraint) for dice 2016
-        # ----------------------------------------------------------------------- #
-        budget = Tstep*(1 - Omega) * zetax * kx**alpha - Tstep*con \
-            + (1 - delta)**Tstep * kx - tf.math.exp(gr_tfp + gr_lab) * kplusy
-        loss_dict['foc_lambd'] = budget
-        # ----------------------------------------------------------------------- #
-        # FOC wrt. TATplus for dice 2016
-        # ----------------------------------------------------------------------- #
-        loss_dict['foc_TATplus'] = etaAT_haty - beta_hat * E_t(
-            lambda s, ps:
-            PolicyState.lambd_haty(ps)
-            * (-Tstep * Definitions.Omega_prime(s, ps)) * State.zetax(s) * kplusy**alpha
-            + PolicyState.etaAT_haty(ps) * (1 - varphi21 - xi2)
-            + PolicyState.etaOC_haty(ps) * varphi4
+            PolicyState.lambd_haty(ps) * (
+                Tstep*(1 -  Definitions.Omega(s, ps))
+                * alpha * kplusy**(alpha - 1)
+                + (1 - delta)**Tstep)
+            + (-PolicyState.nuAT_haty(ps))
+            * Tstep*Definitions.sigma(s, ps) * Definitions.tfp(s, ps)
+            * Definitions.lab(s, ps)
+            * alpha * kplusy**(alpha - 1)
         )
+    # ----------------------------------------------------------------------- #
+    # FOC wrt. lambd_haty (budget constraint) for dice 2016
+    # ----------------------------------------------------------------------- #
+    budget = Tstep*(1 - Omega) * kx**alpha - Tstep*con \
+        + (1 - delta)**Tstep * kx - tf.math.exp(gr_tfp + gr_lab) * kplusy
+    loss_dict['foc_lambd'] = budget
+    # ----------------------------------------------------------------------- #
+    # FOC wrt. TATplus for dice 2016
+    # ----------------------------------------------------------------------- #
+    loss_dict['foc_TATplus'] = etaAT_haty - beta_hat * E_t(
+        lambda s, ps:
+        PolicyState.lambd_haty(ps)
+        * (-Tstep * Definitions.Omega_prime(s, ps)) *  kplusy**alpha
+        + PolicyState.etaAT_haty(ps) * (1 - c1c3 - c1f)
+        + PolicyState.etaOC_haty(ps) * c4
+    )
 
     # ----------------------------------------------------------------------- #
     # FOC wrt. MATplus
     # ----------------------------------------------------------------------- #
     loss_dict['foc_MATplus'] = (-nuAT_haty) - beta_hat * E_t(
         lambda s, ps:
-        (-PolicyState.nuAT_haty(ps)) * (1 - phi12)
-        + PolicyState.nuUO_haty(ps) * phi12
-        + PolicyState.etaAT_haty(ps) * varphi1 * f2xco2 * (1 / (
+        (-PolicyState.nuAT_haty(ps)) * (1 - b12)
+        + PolicyState.nuUO_haty(ps) * b12
+        + PolicyState.etaAT_haty(ps) * c1 * f2xco2 * (1 / (
             tf.math.log(2.) * MATplus))
     )
 
@@ -159,9 +123,9 @@ def equations(state, policy_state):
     # ----------------------------------------------------------------------- #
     loss_dict['foc_MUOplus'] = nuUO_haty - beta_hat * E_t(
         lambda s, ps:
-        (-PolicyState.nuAT_haty(ps)) * phi21
-        + PolicyState.nuUO_haty(ps) * (1 - phi21 - phi23)
-        + PolicyState.nuLO_haty(ps) * phi23
+        (-PolicyState.nuAT_haty(ps)) * b21
+        + PolicyState.nuUO_haty(ps) * (1 - b21 - b23)
+        + PolicyState.nuLO_haty(ps) * b23
     )
 
     # ----------------------------------------------------------------------- #
@@ -169,8 +133,8 @@ def equations(state, policy_state):
     # ----------------------------------------------------------------------- #
     loss_dict['foc_MLOplus'] = nuLO_haty - beta_hat * E_t(
         lambda s, ps:
-        PolicyState.nuUO_haty(ps) * phi32
-        + PolicyState.nuLO_haty(ps) * (1 - phi32)
+        PolicyState.nuUO_haty(ps) * b32
+        + PolicyState.nuLO_haty(ps) * (1 - b32)
     )
 
 
@@ -179,8 +143,8 @@ def equations(state, policy_state):
     # ----------------------------------------------------------------------- #
     loss_dict['foc_TOCplus'] = etaOC_haty - beta_hat * E_t(
         lambda s, ps:
-        PolicyState.etaAT_haty(ps) * varphi21
-        + PolicyState.etaOC_haty(ps) * (1 - varphi4)
+        PolicyState.etaAT_haty(ps) * c1c3
+        + PolicyState.etaOC_haty(ps) * (1 - c4)
     )
 
     return loss_dict

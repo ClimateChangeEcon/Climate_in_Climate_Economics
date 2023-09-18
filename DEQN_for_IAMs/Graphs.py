@@ -4,6 +4,9 @@ import Equilibrium
 import Parameters
 import gc
 
+if Parameters.horovod:
+    import horovod.tensorflow as hvd
+
 Dynamics = importlib.import_module(Parameters.MODEL_NAME + ".Dynamics")
 Hooks = importlib.import_module(Parameters.MODEL_NAME + ".Hooks")
 
@@ -30,26 +33,40 @@ def run_episode(state_episode):
     return state_episode
 
 @tf.function
-def run_grads(state_sample):
+def run_grads(state_sample, first_batch):
     """Runs a single gradient step using Adam for a minibatch"""
     with Parameters.writer.as_default():
         with tf.GradientTape() as tape:
             loss, net_loss = Equilibrium.loss(state_sample, Parameters.policy(state_sample))
 
+    if Parameters.horovod:
+        # Horovod: add Horovod Distributed GradientTape.
+        tape = hvd.DistributedGradientTape(tape)
+        
     grads = tape.gradient(loss, Parameters.policy_net.trainable_variables)
     Parameters.optimizer.apply_gradients(zip(grads, Parameters.policy_net.trainable_variables))
+    
+    # Note: broadcast should be done after the first gradient step to ensure optimizer
+    # initialization.
+    if first_batch:
+        tf.print("Broadcasting variables....")
+        hvd.broadcast_variables(Parameters.policy_net.variables, root_rank=0)
+        hvd.broadcast_variables(Parameters.optimizer.variables(), root_rank=0)
     
     return loss, net_loss
 
 def run_epoch(state_episode):
     # we have a larger effective sample size as we batch simulated
     effective_size = state_episode.shape[0] * state_episode.shape[1]
-    batches =  tf.data.Dataset.from_tensor_slices(tf.reshape(state_episode, [effective_size,len(Parameters.states)])).shuffle(buffer_size=effective_size).batch(Parameters.N_minibatch_size, drop_remainder=True)
+    if not Parameters.sorted_within_batch:
+        batches =  tf.data.Dataset.from_tensor_slices(tf.reshape(state_episode, [effective_size,len(Parameters.states)])).shuffle(buffer_size=effective_size).batch(Parameters.N_minibatch_size, drop_remainder=True)
+    else:
+        batches = tf.data.Dataset.from_tensor_slices(tf.reshape(tf.transpose(state_episode,[1,0,2]), [effective_size,len(Parameters.states)])).batch(Parameters.N_minibatch_size, drop_remainder=True).shuffle(buffer_size=int(effective_size/Parameters.N_minibatch_size))
     epoch_loss = 0.0
     net_epoch_loss = 0.0
     
     for batch in batches:
-        epoch_loss_1, net_epoch_loss_1 = run_grads(batch)    
+        epoch_loss_1, net_epoch_loss_1 = run_grads(batch, Parameters.horovod and Parameters.optimizer.iterations == Parameters.optimizer_starting_iteration)    
         epoch_loss += epoch_loss_1
         net_epoch_loss += net_epoch_loss_1
             
@@ -117,12 +134,16 @@ def run_cycles():
             Parameters.starting_state.assign(state_episode[Parameters.N_episode_length-1,:,:])
             
         state_episode = tf.tensor_scatter_nd_update(state_episode, tf.constant([[ 0 ]]), tf.expand_dims(Parameters.starting_state, axis=0))
+        
         # create checkpoint
         Parameters.ckpt.current_episode.assign_add(1)
-        Parameters.manager.save()
-        # run hooks
-        with Parameters.writer.as_default():
-            Hooks.cycle_hook(state_episode[0,:,:],i)
+        
+        if not Parameters.horovod_worker:
+            Parameters.manager.save()
+            # run hooks
+            with Parameters.writer.as_default():
+                Hooks.cycle_hook(state_episode[0,:,:],i)
+                
         tf.print("Elapsed time since start: ", tf.timestamp() - start_time)
 
         if i % 10 == 0:

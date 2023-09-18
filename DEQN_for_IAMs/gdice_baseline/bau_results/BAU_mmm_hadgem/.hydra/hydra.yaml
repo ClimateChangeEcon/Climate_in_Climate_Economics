@@ -1,12 +1,22 @@
 hydra:
+  run:
+    dir: /home/alexmalova/Documents/dummy_repo_CDICE/DEQN_for_IAMs/gdice_baseline/bau_results/BAU_mmm_hadgem/
+  sweep:
+    dir: multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    subdir: ${hydra.job.num}
+  launcher:
+    _target_: hydra._internal.core_plugins.basic_launcher.BasicLauncher
+  sweeper:
+    _target_: hydra._internal.core_plugins.basic_sweeper.BasicSweeper
+    max_batch_size: null
   help:
     app_name: ${hydra.job.name}
+    header: '${hydra.help.app_name} is powered by Hydra.
+
+      '
     footer: 'Powered by Hydra (https://hydra.cc)
 
       Use --hydra-help to view Hydra specific help
-
-      '
-    header: '${hydra.help.app_name} is powered by Hydra.
 
       '
     template: '${hydra.help.header}
@@ -50,9 +60,12 @@ hydra:
       $HYDRA_CONFIG_GROUPS
 
 
-      Use ''--cfg hydra'' to Show the Hydra config.'
+      Use ''--cfg hydra'' to Show the Hydra config.
+
+      '
+    hydra_help: ???
   hydra_logging:
-    disable_existing_loggers: false
+    version: 1
     formatters:
       simple:
         format: '[%(asctime)s][HYDRA] %(message)s'
@@ -61,27 +74,16 @@ hydra:
         class: logging.StreamHandler
         formatter: simple
         stream: ext://sys.stdout
+    root:
+      level: INFO
+      handlers:
+      - console
     loggers:
       logging_example:
         level: DEBUG
-    root:
-      handlers:
-      - console
-      level: INFO
-    version: 1
-  job:
-    config:
-      override_dirname:
-        exclude_keys: []
-        item_sep: ','
-        kv_sep: '='
-    config_file: config.yaml
-    id: ???
-    name: Parameters
-    num: ???
-    override_dirname: STARTING_POINT=LATEST
-  job_logging:
     disable_existing_loggers: false
+  job_logging:
+    version: 1
     formatters:
       simple:
         format: '[%(asctime)s][%(name)s][%(levelname)s] - %(message)s'
@@ -92,30 +94,57 @@ hydra:
         stream: ext://sys.stdout
       file:
         class: logging.FileHandler
-        filename: ${hydra.job.name}.log
         formatter: simple
+        filename: ${hydra.job.name}.log
     root:
+      level: INFO
       handlers:
       - console
       - file
-      level: INFO
-    version: 1
-  launcher:
-    class: hydra._internal.core_plugins.basic_launcher.BasicLauncher
+    disable_existing_loggers: false
+  env: {}
+  searchpath: []
+  callbacks: {}
   output_subdir: .hydra
   overrides:
     hydra:
-    - hydra.run.dir=/home/alexmalova/Documents/Lambda_Proj/src/DEQN/outputs/gdice_baseline/2022-05-05/BAU_mmm_hadgem
+    - hydra.run.dir=/home/alexmalova/Documents/dummy_repo_CDICE/DEQN_for_IAMs/gdice_baseline/bau_results/BAU_mmm_hadgem/
     task:
     - STARTING_POINT=LATEST
-  run:
-    dir: /home/alexmalova/Documents/Lambda_Proj/src/DEQN/outputs/gdice_baseline/2022-05-05/BAU_mmm_hadgem
+  job:
+    name: Parameters
+    override_dirname: STARTING_POINT=LATEST
+    id: ???
+    num: ???
+    config_name: config.yaml
+    env_set: {}
+    env_copy: []
+    config:
+      override_dirname:
+        kv_sep: '='
+        item_sep: ','
+        exclude_keys: []
   runtime:
-    cwd: /home/alexmalova/Documents/Lambda_Proj/src/DEQN
-    version: 0.11.3
-  sweep:
-    dir: multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}
-    subdir: ${hydra.job.num}
-  sweeper:
-    class: hydra._internal.core_plugins.basic_sweeper.BasicSweeper
+    version: 1.1.0
+    cwd: /home/alexmalova/Documents/dummy_repo_CDICE/DEQN_for_IAMs
+    config_sources:
+    - path: hydra.conf
+      schema: pkg
+      provider: hydra
+    - path: config_postprocess
+      schema: pkg
+      provider: main
+    - path: ''
+      schema: structured
+      provider: schema
+    choices:
+      hydra/env: default
+      hydra/callbacks: null
+      hydra/job_logging: default
+      hydra/hydra_logging: default
+      hydra/hydra_help: default
+      hydra/help: default
+      hydra/sweeper: basic
+      hydra/launcher: basic
+      hydra/output: default
   verbose: false

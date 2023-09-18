@@ -1,14 +1,12 @@
 """
-Filename: post_process_time.py
-Author(s): Simon Scheidegger and Takafumi Usui
-E-mail: u.takafumi@gmail.com
+Filename: post_process_baseline.py
 Description:
-Post processing with the trained (BAU solution) policy fuctions using DEQN.
+Post processing with the trained (BAU solution) policy functions using DEQN.
 With this script, we
-- compute and plot the dynamics of the exogenous parameters
-- compute and plot the distributions of the state, policy and (selected)
+- simulate the dynamics of the exogenous parameters
+- simulate the dyamics of the state, policy and (selected)
 defined variables
-- compute Euler errors of the loss equations
+- compute and report Euler errors of the loss equations
 """
 
 import numpy as np  # using float32 to have a compatibility with tensorflow
@@ -34,25 +32,6 @@ pd.set_option('display.max_columns', None)
 # Get the size of the current terminal
 terminal_size_col = shutil.get_terminal_size().columns
 
-# Use TeX font
-rc('font', **{'family': 'sans-serif', 'serif': ['Helvetica']})
-rc('text', usetex=True)
-# Font size
-plt.rcParams["font.size"] = 12
-plt.rcParams["axes.labelsize"] = 14
-plt.rcParams["axes.titlesize"] = 14
-plt.rcParams["legend.title_fontsize"] = 14
-plt.rcParams["axes.grid"] = True
-plt.rcParams["grid.linestyle"] = 'dotted'
-
-fsize = (9, 6)
-line_args = {'markerfacecolor': 'None', 'color': 'tab:blue', 'marker': None,
-             'linestyle': '-'}
-distribution_args = {'markerfacecolor': 'None', 'color': 'tab:blue',
-                     'marker': '.', 'linestyle': 'None'}
-
-lb_quantiles = [10, 25, 50, 75, 90]
-
 exparams = ['tfp', 'gr_tfp', 'lab', 'gr_lab', 'sigma', 'theta1', 'Eland',
             'Fex', 'beta_hat']
 econ_defs = ['con', 'Omega', 'ygross', 'ynet', 'inv', 'Eind',
@@ -61,9 +40,9 @@ econ_defs = ['con', 'Omega', 'ygross', 'ynet', 'inv', 'Eind',
 # sys.exit(0)
 # --------------------------------------------------------------------------- #
 print("-" * terminal_size_col)
-print(r"Plot the dynamics of the exogenous parameters")
+print(r"Simulate the dynamics of the exogenous parameters")
 # --------------------------------------------------------------------------- #
-Version = Parameters.Version
+
 alpha = Parameters.alpha
 starting_state = Parameters.starting_state
 starting_policy = Parameters.policy(starting_state)
@@ -81,7 +60,7 @@ N_defined = len(Parameters.definitions)  # Number of defined variables
 N_episode_length = Parameters.N_episode_length
 starting_state = tf.reshape(tf.constant([
     Parameters.k0, Parameters.MAT0, Parameters.MUO0, Parameters.MLO0,
-    Parameters.TAT0, Parameters.TOC0, Parameters.zeta0, Parameters.chi0,
+    Parameters.TAT0, Parameters.TOC0,
     Parameters.tau0]), shape=(1, N_state))
 
 # Simulate the economy for N_episode_length time periods
@@ -100,39 +79,24 @@ df_time.to_csv(Parameters.LOG_DIR + "/time.csv", index=False)
 df_exopar = pd.DataFrame()
 
 for de in exparams:
-    fig, ax = plt.subplots(figsize=fsize)
     de_val = getattr(Definitions, de)(state_1episode, policy_1episode)
     if de in ['gr_tfp', 'lab', 'gr_lab', 'theta1', 'Fex', 'beta_hat']:
         de_val = de_val
     elif de in ['tfp']:
-        if Version == '2007' or Version == 'cjl':
-            de_val =  de_val**(1-alpha)
-        else:
-            de_val =  (1000 * de_val)**(1-alpha)
+        de_val =  (1000 * de_val)**(1-alpha)
     elif de in ['sigma', 'Eland']:
-        if Version == '2007' or Version == 'cjl':
-            de_val = 1000 * de_val
-        else:
-            de_val = 1000 * 3.666 * de_val
-
-    ax.plot(ts, de_val)
-    ax.set_xlabel('Year')
-    ax.set_xlim([0, None])
-    ax.set_ylabel(r'{}'.format(de.replace('_', '\_')))
-    plt.savefig(Parameters.LOG_DIR + '/exparams_ts_' + de + '.pdf')
-    plt.close()
+        de_val = 1000 * 3.666 * de_val
     df_exopar[de] = de_val
 
 df_exopar.to_csv(Parameters.LOG_DIR + "/exoparams.csv", index=False)
 
 # --------------------------------------------------------------------------- #
 print("-" * terminal_size_col)
-print(r"Plot one simulated path. If there is no stochastic shock, it is "
+print(r"Simulate one path. If there is no stochastic shock, it is "
       "equivalent to the deterministic path")
 # --------------------------------------------------------------------------- #
 df_states = pd.DataFrame()
 for sidx, state in enumerate(Parameters.states):
-    fig, ax = plt.subplots(figsize=fsize)
     # State variable
     state_val = getattr(State, state)(state_1episode)
     # Adjust state variables
@@ -144,19 +108,11 @@ for sidx, state in enumerate(Parameters.states):
     elif state in ['MATx', 'MUOx', 'MLOx']:
         # Rescale to GtC
         state_val = state_val * 1000
-    ax.plot(ts, state_val.numpy(), **line_args)
-    ax.set_xlabel('Year')
-    ax.set_xlim([0, None])
-    ax.set_ylabel(r'{}'.format(state.replace('_', '\_')))
-
-    plt.savefig(Parameters.LOG_DIR + '/1episode_ts_' + state + '.pdf')
-    plt.close()
     df_states[state] = state_val
 df_states.to_csv(Parameters.LOG_DIR + "/states.csv", index=False)
 
 df_ps = pd.DataFrame()
 for pidx, ps in enumerate(Parameters.policy_states):
-    fig, ax = plt.subplots(figsize=fsize)
     # policy variable
     ps_val = getattr(PolicyState, ps)(policy_1episode)
     # Adjust state variables
@@ -166,13 +122,6 @@ for pidx, ps in enumerate(Parameters.policy_states):
         gr_tfp = Definitions.gr_tfp(state_1episode, policy_1episode)
         gr_lab = Definitions.gr_lab(state_1episode, policy_1episode)
         ps_val = ps_val * tf.math.exp(gr_tfp + gr_lab) * tfp * lab
-    ax.plot(ts, ps_val.numpy(), **line_args)
-    ax.set_xlabel('Year')
-    ax.set_xlim([0, None])
-    ax.set_ylabel(r'{}'.format(ps.replace('_', '\_')))
-
-    plt.savefig(Parameters.LOG_DIR + '/1episode_ts_' + ps + '.pdf')
-    plt.close()
     df_ps[ps] = ps_val
 df_ps.to_csv(Parameters.LOG_DIR + "/ps.csv", index=False)
 
@@ -180,7 +129,6 @@ df_def = pd.DataFrame()
 for didx, de in enumerate(
         ['con', 'Omega', 'ygross', 'ynet', 'inv', 'Eind',
         'scc',  'Dam', 'Emissions']):
-    fig, ax = plt.subplots(figsize=fsize)
     # defined economic variable
     de_val = getattr(Definitions, de)(state_1episode, policy_1episode)
     if de in ['con', 'ygross', 'ynet', 'inv', 'Dam']:
@@ -188,30 +136,13 @@ for didx, de in enumerate(
         lab = Definitions.lab(state_1episode, policy_1episode)
         de_val = de_val * tfp * lab
     elif de in ['Eind']:
-        if Version == '2007' or Version == 'cjl':
-            de_val = de_val * tfp * lab * 1000
-        else:
-            de_val = de_val * tfp * lab * 1000 * 3.666
+        de_val = de_val * tfp * lab * 1000 * 3.666
     elif de in ['Emissions']:
-        if Version == '2007' or Version == 'cjl':
-            de_val = de_val * 1000
-        else:
-            de_val = de_val * 1000 * 3.666
+        de_val = de_val * 1000 * 3.666
     elif de in ['scc']:
-        if Version == '2007' or Version == 'cjl':
-            de_val = de_val
-        else:
-            de_val = de_val / 3.666
-    ax.plot(ts, de_val.numpy(), **line_args)
-    ax.set_xlabel('Year')
-    ax.set_xlim([0, None])
-    ax.set_ylabel(r'{}'.format(de.replace('_', '\_')))
-
-    plt.savefig(Parameters.LOG_DIR + '/1episode_ts_' + de + '.pdf')
-    plt.close()
+        de_val = de_val / 3.666
     df_def[de] = de_val
 df_def.to_csv(Parameters.LOG_DIR + "/defs.csv", index=False)
-
 
 
 # --------------------------------------------------------------------------- #
@@ -219,7 +150,7 @@ print("-" * terminal_size_col)
 print(r"Simulate the economy forward in batch")
 # --------------------------------------------------------------------------- #
 # Number of simulation batch, it should be arbitrary but big enough
-N_sim_batch = 100
+N_sim_batch = 20
 
 # Store the simulated episodes
 state_episode_batch = np.empty(
@@ -293,26 +224,17 @@ for didx, de in enumerate(econ_defs):
             lab = Definitions.lab(state_1episode, policy_1episode)
             de_val = de_val * tfp * lab
         elif de in ['Eind']:
-            if Version == '2007' or Version == 'cjl':
-                de_val = de_val * tfp * lab * 1000
-            else:
-                de_val = de_val * tfp * lab * 1000 * 3.666
+            de_val = de_val * tfp * lab * 1000 * 3.666
         elif de in ['Emissions']:
-            if Version == '2007' or Version == 'cjl':
-                de_val = de_val * 1000
-            else:
-                de_val = de_val * 1000 * 3.666
+            de_val = de_val * 1000 * 3.666
         elif de in ['carbontax', 'scc']:
-            if Version == '2007' or Version == 'cjl':
-                de_val = de_val
-            else:
-                de_val = de_val / 3.666
+            de_val = de_val / 3.666
         defined_episode_scaled[:, batchidx, didx] = defined_val
 
 
 # We are interested in the Euler errors only from 2005 to 2100; therefore, we
 # terminate this script if we simulate the economy not for 96 years.
-ts_beg = 2005
+ts_beg = 2015
 ts_end = 2100
 err_percentiles = [.001, 0.25, 0.50, 0.75, 0.999]
 # ----------------------------------------------------------------------- #

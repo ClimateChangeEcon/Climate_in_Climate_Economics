@@ -6,8 +6,6 @@ import PolicyState
 import Definitions
 import Parameters
 
-# Extract parameters
-varrho, varsigma = Parameters.varrho, Parameters.varsigma
 
 # --------------------------------------------------------------------------- #
 # Deterministic case
@@ -15,13 +13,6 @@ varrho, varsigma = Parameters.varrho, Parameters.varsigma
 
 # Probability of a dummy shock
 shock_probs = tf.constant([1.0])  # Dummy probability
-
-
-def augment_state(state):
-    """ Transform the zetax state by taking its exponential """
-    _state = state
-    _state = State.update(_state, 'zetax', tf.math.exp(State.zetax(state)))
-    return _state
 
 
 def total_step_random(prev_state, policy_state):
@@ -32,7 +23,7 @@ def total_step_random(prev_state, policy_state):
 
     _total_random = _ar + _shock + _policy
 
-    return augment_state(_total_random)
+    return _total_random
 
 
 def total_step_spec_shock(prev_state, policy_state, shock_index):
@@ -43,29 +34,24 @@ def total_step_spec_shock(prev_state, policy_state, shock_index):
 
     _total_spec = _ar + _shock + _policy
 
-    return augment_state(_total_spec)
+    return _total_spec
 
 
 def AR_step(prev_state):
-    """ AR(1) shock on zetax and chix """
+    """ AR(1) shock """
     _ar_step = tf.zeros_like(prev_state)  # Initialization
-    _ar_step = State.update(
-        _ar_step, 'zetax',
-        tf.math.log(State.zetax(prev_state)) + State.chix(prev_state))
-    _ar_step = State.update(
-        _ar_step, 'chix', Parameters.r * State.chix(prev_state))
     return _ar_step
 
 
 def shock_step_random(prev_state):
-    """ TFP shock zeta and chi """
+    """ TFP shock """
     _shock_step = tf.zeros_like(prev_state)  # Initialization
 
     return _shock_step
 
 
 def shock_step_spec_shock(prev_state, shock_index):
-    """ TFP shock zeta and chi """
+    """ TFP shock """
     _shock_step = tf.zeros_like(prev_state)  # Initialization
 
     return _shock_step

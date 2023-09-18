@@ -1,11 +1,11 @@
 layers:
   - hidden:
-     units: 512
+     units: 1024
      type: dense
      activation: relu
      init_scale: 1.
   - hidden:
-     units: 512
+     units: 1024
      type: dense
      activation: relu
      init_scale: 1.

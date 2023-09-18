@@ -52,18 +52,6 @@ states:
   # ------------------------------------------------------------------------- #
   # Auxiliary state
   # ------------------------------------------------------------------------- #
-  - name: zetax  # TFP random variable
-    init:
-      distribution: truncated_normal
-      kwargs:
-        mean: 1.
-        stddev: 0.
-  - name: chix  # TFP random variable
-    init:
-      distribution: truncated_normal
-      kwargs:
-        mean: 0.
-        stddev: 0.
   - name: taux  # Computational time
     init:
       distribution: truncated_normal
@@ -112,14 +100,14 @@ definitions:
   - name: Eland  # Natural carbon emissions
   - name: Fex  # External radiative forcing
   - name: beta_hat  # Effective discout factor
-  - name: phi32 # Mass of carbon transmission
-  - name: phi21 # Mas of carbon transmission
-  - name: phi12 # Mass of carbon transmission
-  - name: phi23 # Mass of carbon transmission
-  - name: varphi21 #Temeprature coefficient
-  - name: varphi1 #Temeprature coefficient
-  - name: xi2 #Temeprature coefficient
-  - name: varphi4 #Temeprature coefficient
+  - name: b32 # Mass of carbon transmission
+  - name: b21 # Mas of carbon transmission
+  - name: b12 # Mass of carbon transmission
+  - name: b23 # Mas of carbon transmission
+  - name: c1c3 #Temeprature coefficient
+  - name: c1 #Temeprature coefficient
+  - name: c1f #Temeprature coefficient
+  - name: c4 #Temeprature coefficient
 
   # ------------------------------------------------------------------------- #
   # Economic variables

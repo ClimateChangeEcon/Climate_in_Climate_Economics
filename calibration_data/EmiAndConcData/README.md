@@ -18,5 +18,5 @@ The following files contain annual mean CO2 concentrations from 1750 to 2500 for
 - RCP60_MIDYR_CONC.DAT
 - RCP85_MIDYR_CONC.DAT
 
-The data is read by the [Code](https://github.com/sischei/dummy_repo_CDICE/blob/main/calibration_data/Code), by the script ClimDICE.py, via the function LoadEmiAndConcData.
+The data is read by the [Code](https://github.com/ClimateChangeEcon/Climate_in_Climate_Economics/tree/main/calibration_data/Code), by the script ClimDICE.py, via the function LoadEmiAndConcData.
 

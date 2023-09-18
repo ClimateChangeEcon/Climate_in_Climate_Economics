@@ -2,7 +2,7 @@
 
 The folder contains data and codes used for the calibration of the CE in the CDICE paper, arranged in three sub-folders:
 
-- ['Code'](Code) contains the three python codes used in the CDICE paper.
+- ['Code'](Code) contains the Python codes used in the CDICE paper to calibrate the climate.
 - ['EmiAndConcData'](EmiAndConcData) contains emission data for the different RCPs, as input for the CE.
 - ['DataFromCMIP'](DataFromCMIP) contains CMIP5 benchmark data for the different RCPs and the 1pctCO2.
 
@@ -37,11 +37,13 @@ EmiAndConcData
 
 We provide implementations that use python 3.
 
-The code consists of three python scripts
+The code consists of the following python scripts
 
 - Figs4Paper.py is the user front end, where you may choose which figures to plot.
 - TestDefs.py is called by Figs4Paper, it sets up the simulation to be run for the desired figure.
 - ClimDICE.py integrates the CE with a simple forward Euler scheme. 
+- Table1.py produces Table 1 in the manuscript.
+- Table3.py produces Table 3 in the manuscript.
 
 Technical details for each script are given in the headers the individual *.py files located in ['Code'](Code).
 
