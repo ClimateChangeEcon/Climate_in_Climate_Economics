@@ -11,4 +11,6 @@ Usage of the scripts is documented [here](https://github.com/sischei/dummy_repo_
  Again, there is no need for a user to change this file. If you intend to calibrate your own CE, the script may be of interest as it contains functions for the [Joos et al. (2013)](https://acp.copernicus.org/articles/13/2793/2013/acp-13-2793-2013.html) 100 GtC pulse test case (function BenchMarkJoos) and for the [Geoffroy et al. (2013)](https://journals.ametsoc.org/view/journals/clim/26/6/jcli-d-12-00195.1.xml) 4xCO2 test case (function BenchMarkGeoffrey).
  - Table1.py is the file that produces table 1 in the manuscript.
  - Table3.py is the file that procudes table 3 in the manuscript.
+ - TestCalibCC.py : Strongly reduced, partial copy of TestDefs.py containing only one function, the test case needed for calibrating the carbon cycle, the function call modified to take the parameter values to be calibrated as input.
+
  
