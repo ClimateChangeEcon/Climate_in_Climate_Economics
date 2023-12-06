@@ -23,16 +23,16 @@ Thereafter, make sure you are at the root directory of DEQN (e.g., ~/DEQN_for_IA
 execute:
 
 ```
-python run_deepnet.py
+$ python run_deepnet.py
 ```
 ## How to analyze the pre-computed solutions
 
 To analyze the the raw results used for the figures presented in the paper, you need to perform two steps.
 
 ```
-export USE_CONFIG_FROM_RUN_DIR=<PATH_TO_THE_FOLDER>/Climate_in_Climate_Economics/DEQN_for_IAMS/<MODEL_FOLDER>
+$ export USE_CONFIG_FROM_RUN_DIR=<PATH_TO_THE_FOLDER>/Climate_in_Climate_Economics/DEQN_for_IAMS/<MODEL_FOLDER>
 
-python post_process_generic.py STARTING_POINT=LATEST hydra.run.dir=$USE_CONFIG_FROM_RUN_DIR
+$ python post_process_generic.py STARTING_POINT=LATEST hydra.run.dir=$USE_CONFIG_FROM_RUN_DIR
 
 ```
 
@@ -536,7 +536,7 @@ Use the solution to the CDICE model with psi=0.5 as a pretrained neural network;
 The solution for the model CDICE-GISS-E2-R with psi=0.5 is large, thus it is stored in the archive. Before the prostrpocessing go to the folder ```<PATH_TO_THE_FOLDER>/Climate_in_Climate_Economics/DEQN_for_IAMS/dice_generic/optimal_results/IES05/Opt_mmm_giss_psi05``` and unpack the archive:
 
 ```
-tar -xf NN_data.tar.xz
+$ tar -xf NN_data.tar.xz
 ```
 To run the postprocessing make sure that the content of the folder ```NN_data``` is stored in the respective folder of the model, otherwise, one needs to modify a postprocessing path ```  <MODEL_FOLDER>```.
 
@@ -568,6 +568,6 @@ model with psi=0.5 and rho=0.004 from the episode 251 on;
 The solution for the model CDICE-HadGEM2-ES with psi=0.5 is large, thus it is stored in the archive. Before the prostrpocessing go to the folder ```<PATH_TO_THE_FOLDER>/Climate_in_Climate_Economics/DEQN_for_IAMS/dice_generic/optimal_results/IES05/Opt_mmm_hadgem_psi05``` and unpack the archive:
 
 ```
-tar -xf NN_data.tar.xz
+$ tar -xf NN_data.tar.xz
 ```
 To run the postprocessing make sure that the content of the folder ```NN_data``` is stored in the respective folder of the model, otherwise, one needs to modify a postprocessing path ```  <MODEL_FOLDER>```.
