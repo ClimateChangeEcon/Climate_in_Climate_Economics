@@ -15,9 +15,9 @@ This Python and Julia-based code repository supplements the work of [Doris Folin
       - Its content and usage are detailed in the corresponding [README](calibration_data/README.md).
 
   2. ["DEQN_for_IAMs"](DEQN_for_IAMs): Replication codes for *Section 6 - The social cost of carbon and optimal abatement in the DICE economy*, where non-stationary integrated assessment models (IAMs) are solved by adopting ["Deep Equilibrium Nets (DEQN)"](https://onlinelibrary.wiley.com/doi/epdf/10.1111/iere.12575) to the context of climate economic models. Notice that the codes provided here complement the Online Appendix D of our article, where the formal underpinnings of the code are outlined.
-      - How to compute the individual model calibrations is detailed in the various readmes that provided under the following three links: [optimal results](DEQN_for_IAMs/dice_generic/README.md), [business as usual results](DEQN_for_IAMs/dice_generic_FEX), and [results from the appendix](DEQN_for_IAMs/gdice_baseline/README.md).
+      - How to compute the individual model calibrations is detailed in the various readmes that provided under the following three links: [optimal results](DEQN_for_IAMs/dice_generic/README.md), [business as usual results](DEQN_for_IAMs/gdice_baseline/README.md), and [results from the appendix](DEQN_for_IAMs/dice_generic_FEX).
       - The content and usage of the generic Deep Equilibrium Nets for Integrated Assessment Models framework are outlined in the corresponding [README](DEQN_for_IAMs/README.md).
-
+      
   3. ["figures_replication"](figures_replication): Replication routines for plotting all the figures that are presented in the paper.
 
   
@@ -226,7 +226,7 @@ Furthermore, the two relevant references to the CMIP5 datasets we are using are 
 
 For the two CMIP5 test cases described in Section 4.4. ('Temperature evolution as atmospheric CO2 increases at 1% per year') and Section 4.5. ('CMIP5 historical and RCP evolution as simulated by CDICE'), we use the benchmark data that was added to [this folder](calibration_data/DataFromCMIP).
 
-The data are based on montly mean global mean surface temperature data from the CMIP5 archive, as downloaded on March 1, 2021, from http://iacweb.ethz.ch/staff/beyerleu/cmip5/. The site offers an easy to use mirror to the full CMIP5 archive at https://esgf-node.llnl.gov/search/cmip5/
+The data are based on montly mean global mean surface temperature data from the CMIP5 archive, as downloaded on March 1, 2021, from http://iacweb.ethz.ch/staff/beyerleu/cmip5/. The site offers an easy to use mirror to the full CMIP5 archive at https://esgf-node.llnl.gov/search/cmip5/.
 
 The monthly mean data have been aggregated to annual means using cdo (climate data operators, https://code.mpimet.mpg.de/projects/cdo/).
 The data comes in netcdf format. 
