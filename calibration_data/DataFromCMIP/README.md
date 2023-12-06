@@ -1,4 +1,5 @@
-# CMIP5 output data for CE testing
+# CMIP5 output data for Climate Emulator testing
+
 This folder contains benchmark data for the two CMIP5 test cases described in Section 4.4. ('Temperature evolution as atmospheric CO2 increases at 1% per year') and Section 4.5. ('CMIP5 historical and RCP evolution as simulated by CDICE').
 
 The data are based on montly mean global mean surface temperature data from the CMIP5 archive, as downloaded on March 1, 2021, from http://iacweb.ethz.ch/staff/beyerleu/cmip5/. The site offers an easy to use mirror to the full CMIP5 archive at https://esgf-node.llnl.gov/search/cmip5/
