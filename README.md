@@ -15,7 +15,7 @@ This Python and Julia-based code repository supplements the work of [Doris Folin
       - Its content and usage are detailed in the corresponding [README](calibration_data/README.md).
 
   2. ["DEQN_for_IAMs"](DEQN_for_IAMs): Replication codes for *Section 6 - The social cost of carbon and optimal abatement in the DICE economy*, where non-stationary integrated assessment models (IAMs) are solved by adopting ["Deep Equilibrium Nets (DEQN)"](https://onlinelibrary.wiley.com/doi/epdf/10.1111/iere.12575) to the context of climate economic models. Notice that the codes provided here complement the Online Appendix D of our article, where the formal underpinnings of the code are outlined.
-      - How to compute the individual model calibrations is detailed in the various readmes that provided under the following three links: [link 1: `optimal results`](DEQN_for_IAMs/dice_generic/README.md), [link 2: `business as usual` results](DEQN_for_IAMs/dice_generic_FEX), and [link 3: `results from the appendix`](DEQN_for_IAMs/gdice_baseline/README.md).
+      - How to compute the individual model calibrations is detailed in the various readmes that provided under the following three links: [optimal results](DEQN_for_IAMs/dice_generic/README.md), [business as usual results](DEQN_for_IAMs/dice_generic_FEX), and [results from the appendix](DEQN_for_IAMs/gdice_baseline/README.md).
       - The content and usage of the generic Deep Equilibrium Nets for Integrated Assessment Models framework are outlined in the corresponding [README](DEQN_for_IAMs/README.md).
 
   3. ["figures_replication"](figures_replication): Replication routines for plotting all the figures that are presented in the paper.
