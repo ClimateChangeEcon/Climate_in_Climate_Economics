@@ -188,8 +188,6 @@ To replicate the remaining results for individual models discussed in *Section 6
 
 * For general instructions on using our code to solve IAMs with DEQNs, please follow the instructions given [here](DEQN_for_IAMs/README.md).
 
-* All the solution results, as well as pre-trained models for replication, are stored in the folder [optimal_results](DEQN_for_IAMs/dice_generic/optimal_results), and explained in [this readme](DEQN_for_IAMs/dice_generic/optimal_results/README.md).
-
 
 ## Datasets
 
