@@ -29,31 +29,29 @@ importlib.reload(td)
 #user defined input starts here
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-M2C = 'DEMO'     #what model to calibrate? 'MMM', 'MESMO', or 'LOVECLIM'? 'DEMO'-> fast demonstration of code
-COF = 'COARSE'  #coarse or fine search range? 'COARSE' or 'FINE'? (pre-defined, see below)
+M2C = 'MMM'     #what model to calibrate? 'MMM', 'MESMO', or 'LOVECLIM'?
+COF = 'DEMO'  #coarse or fine search range? 'COARSE' or 'FINE' or 'DEMO'? (pre-defined, see below)
 NMY = 250       #maximum norm over how many years? At most 1000
 
 ShowAllTries = 'yes'  #in final plots, show gray lines for each try?
 
 
 # Below come the pre-defined search ranges for CC parameters [b12, b23, muo, mlo] for models MMM, MESMO, LOVECLIM
-# For demonstration purposes, and to reduce the run time, two sets of parameter search ranges per model are prescribed:
+# For demonstration purposes, and to reduce the run time, three sets of parameter search ranges per model are prescribed:
+#  - a DEMO search range, chosen such that the best fit values in Table 1 are obtained with only a very small search
 #  - a COARSE search range, chosen such that the best fit values in Table 1 are one point in this search space
 #  - a FINE, NEAR OPTIMUM search range, exploring the vicinity of the best fit values in Table 1 / the COARSE search range
-# For demonstration purposes, a really small search range is also given, which you may uncomment (and set M2C to 'none')
-# For a true search, the parameter ranges are large and the step size for searchin fine.
-
-if (M2C == 'DEMO'):
-    # SMALL CODE DEMONSTRATION SEARCH RANGE for model MMM - to use, uncomment and set above M2C='none'
-    #------------------------------------------------------------------------
-    n2f = 16 #MMM - the model from J13 we want to fit, number given by implementation of J13 in ClimDICE.py        [MMM -> n2f=16, MESMO -> n2f=10, LOVECLIM -> n2f=9]
-    Tb12 = np.arange(0.053, 0.055, 0.001)
-    Tb23 = np.arange(0.0081, 0.0083, 0.0001)
-    Tmuo = np.arange(488., 490., 1.)
-    Tmlo = np.arange(1280., 1282., 1.)
 
 if (M2C == 'MMM'):
     n2f = 16 #MMM - the model from J13 we want to fit, number given by implementation of J13 in ClimDICE.py
+    if (COF == 'DEMO'):
+        # DEMO SEARCH RANGE for model MMM
+        Tb12 = np.arange(0.049, 0.060, 0.005)
+        Tb23 = np.arange(0.0077, 0.0088, 0.0005)
+        Tmuo = np.arange(439., 539., 50.)
+        Tmlo = np.arange(1231., 1330., 50.)
+        # above parameter range over NMY=250 yields BEST OF ALL IS: b12=0.05399999999999999   b23=0.008200000000000002   muo=489.0   mlo=1281.0   dist=0.021039764318253495    idi=20
+
     if (COF == 'COARSE'):
         # COARSE SEARCH RANGE for model MMM
         Tb12 = np.arange(0.034, 0.095, 0.005)
@@ -72,6 +70,14 @@ if (M2C == 'MMM'):
 
 if (M2C == 'MESMO'):
     n2f = 10 #MESMO - the model from J13 we want to fit, number given by implementation of J13 in ClimDICE.py
+    if (COF == 'DEMO'):
+        # DEMO SEARCH RANGE for model MESMO
+        Tb12 = np.arange(0.054, 0.065, 0.005)
+        Tb23 = np.arange(0.0075, 0.0084, 0.0005)
+        Tmuo = np.arange(255., 354., 50.)
+        Tmlo = np.arange(815., 914., 50.)
+        # above parameter range over NMY=250 yields BEST OF ALL IS: b12=0.05899999999999999   b23=0.008   muo=305.0   mlo=915.0   dist=0.027641126137730287    idi=2
+
     if (COF == 'COARSE'):
         # COARSE SEARCH RANGE for model MESMO
         Tb12 = np.arange(0.039, 0.090, 0.005)
@@ -90,6 +96,14 @@ if (M2C == 'MESMO'):
 
 if (M2C == 'LOVECLIM'):
     n2f =  9 #LOVECLIM - the model from J13 we want to fit, number given by implementation of J13 in ClimDICE.py
+    if (COF == 'DEMO'):
+        # DEMO SERCH RANGE for model LOVECLIM
+        Tb12 = np.arange(0.062, 0.073, 0.005)
+        Tb23 = np.arange(0.0090, 0.0099, 0.0005)
+        Tmuo = np.arange(550.,  651., 50.)
+        Tmlo = np.arange(1335., 1434., 50.)
+        # above parameter range over NMY=250 yields BEST OF ALL IS: b12=0.061999999999999986   b23=0.008499999999999997   muo=650.0   mlo=1185.0   dist=0.03630465851778697    idi=2
+
     if (COF == 'COARSE'):
         # COARSE SERCH RANGE for model LOVECLIM
         Tb12 = np.arange(0.037, 0.088, 0.005)
