@@ -84,7 +84,7 @@ To gain further insight into the calibration of the carbon cycle, the script ``T
 $ python Tabel1.py
 ```
 
-* The header of ``Tabel1.py`` allows to set the data against which the carbon cycle is to be calibrated (M2C = 'MMM', 'MESMO', or 'LOVECLIM'), whether a coarse or fine grid search is performed (COF = 'COARSE'' or 'FINE'), and over how many years the maximum norm is evaluated (default is 250 years, NMY = 250).
+* The header of ``Tabel1.py` allows to set the data against which the carbon cycle is to be calibrated (M2C = 'MMM', 'MESMO', or 'LOVECLIM'), whether a coarse or fine grid search is performed (COF = 'COARSE'' or 'FINE' or 'DEMO'), and over how many years the maximum norm is evaluated (default is 250 years, NMY = 250). The default search range = DEMO returns the values in the article without a long optimization, as described in the respective Python script.
 
 * The temperature response function in CDICE requires no calibration, coefficients are taken directly from [Geoffroy et al. (2013)](https://journals.ametsoc.org/view/journals/clim/26/6/jcli-d-12-00195.1.xml).
 
