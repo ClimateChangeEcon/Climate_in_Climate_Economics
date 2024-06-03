@@ -278,12 +278,20 @@ Please cite [The Climate in Climate Economics](https://papers.ssrn.com/sol3/pape
 in your publications if it helps your research:
 
 ```
-@article{Folini_2023,
-  title={The climate in climate economics},
-  author={Folini, Doris and Friedl, Aleksandra and Kubler, Felix and Scheidegger, Simon},
-  journal={Available at SSRN 3885021},
-  year={2023}
+@article{10.1093/restud/rdae011,
+    author = {Folini, Doris and Friedl, Aleksandra and Kübler, Felix and Scheidegger, Simon},
+    title = "{The Climate in Climate Economics*}",
+    journal = {The Review of Economic Studies},
+    pages = {rdae011},
+    year = {2024},
+    month = {01},
+    abstract = "{To analyse climate change mitigation strategies, economists rely on simplified climate models—so-called climate emulators—that provide a realistic quantitative link between CO2 emissions and global warming at low computational costs. In this paper, we propose a generic and transparent calibration and evaluation strategy for these climate emulators that are based on freely and easily accessible state-of-the-art benchmark data from climate sciences. We demonstrate that the appropriate choice of the free model parameters can be of key relevance for the predicted social cost of carbon. The key idea we put forward is to calibrate the simplified climate models to benchmark data from comprehensive global climate models that took part in the coupled model intercomparison project, phase 5 (CMIP5). In particular, we propose to use four different test cases that are considered pivotal in the climate science literature: two highly idealized tests to separately calibrate and evaluate the carbon cycle and temperature response, an idealized test to quantify the transient climate response, and a final test to evaluate the performance for scenarios close to those arising from economic models, and that include exogenous forcing. As a concrete example, we re-calibrate the climate part of the widely used DICE-2016, fathoming the CMIP5 uncertainty range of model responses: the multi-model mean as well as extreme, but still permissible climate sensitivities and carbon cycle responses. We demonstrate that the functional form of the climate emulator of the DICE-2016 model is fit for purpose, despite its simplicity, but its carbon cycle and temperature equations are miscalibrated, leading to the conclusion that one may want to be skeptical about predictions derived from DICE-2016. We examine the importance of the calibration for the social cost of carbon in the context of a partial equilibrium setting where interest rates are exogenous, as well as the simple general equilibrium setting from DICE-2016. We find that the model uncertainty from different consistent calibrations of the climate system can change the social cost of carbon by a factor of 4 if one assumes a quadratic damage function. When calibrated to the multi-model mean, our model predicts similar values for the social cost of carbon as the original DICE-2016, but with a strongly reduced sensitivity to the discount rate and about 1 degree less long-term warming. The social cost of carbon in DICE-2016 is oversensitive to the discount rate, leading to extreme comparative statics responses to changes in preferences.}",
+    issn = {0034-6527},
+    doi = {10.1093/restud/rdae011},
+    url = {https://doi.org/10.1093/restud/rdae011},
+    eprint = {https://academic.oup.com/restud/advance-article-pdf/doi/10.1093/restud/rdae011/56663801/rdae011.pdf},
 }
+
 ```
 
 
