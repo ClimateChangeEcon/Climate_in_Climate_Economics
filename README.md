@@ -274,8 +274,7 @@ The said data can be read by the [Code](calibration_data/Code), by the script Cl
 
 ## Citation
 
-Please cite [The Climate in Climate Economics]([https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3885021](https://academic.oup.com/restud/advance-article-abstract/doi/10.1093/restud/rdae011/7593489?redirectedFrom=fulltext&login=false))
-in your publications if it helps your research:
+Please cite [The Climate in Climate Economics](https://academic.oup.com/restud/advance-article-abstract/doi/10.1093/restud/rdae011/7593489?redirectedFrom=fulltext&login=false) in your publications if it helps your research:
 
 ```
 @article{10.1093/restud/rdae011,
